@@ -1,0 +1,8 @@
+rm -f Requirements.txt
+cat > requirements.txt << 'EOF'
+streamlit
+scikit-learn
+numpy
+pandas
+matplotlib
+seaborn
