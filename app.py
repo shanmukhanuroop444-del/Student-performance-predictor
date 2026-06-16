@@ -1,6 +1,6 @@
 import streamlit as st        # Streamlit is the framework that turns this Python script into a web app
 import numpy as np             # NumPy is used to create the input array we feed into the model
-import pickle                  # Pickle lets us load the saved model.pkl file back into memory
+import joblib                  # Pickle lets us load the saved model.pkl file back into memory
 
 # ─────────────────────────────────────────────
 # PAGE CONFIGURATION
@@ -24,8 +24,8 @@ st.set_page_config(
 @st.cache_resource
 def load_model():
     # "rb" means "read binary" — pickle files are binary files, not plain text
-    with open("model.pkl", "rb") as f:
-        model = pickle.load(f)   # Deserializes the model object back from disk
+
+    model = joblib.load("model.pkl")   # Deserializes the model object back from disk
     return model
 
 model = load_model()   # Call the function; the returned model object is stored here
