@@ -1,6 +1,5 @@
 import streamlit as st        # Streamlit is the framework that turns this Python script into a web app
 import numpy as np             # NumPy is used to create the input array we feed into the model
-import pickle                  # Pickle lets us load the saved model.pkl file back into memory
 
 # ─────────────────────────────────────────────
 # PAGE CONFIGURATION
@@ -22,13 +21,19 @@ st.set_page_config(
 # Without caching, the model would reload from disk on EVERY user interaction,
 # which would make the app slow. With caching, it's loaded only once per session.
 @st.cache_resource
+@st.cache_resource
 def load_model():
-    # "rb" means "read binary" — pickle files are binary files, not plain text
-
-    with open("model.pkl", "rb") as f:
-        model = pickle.load(f)   # Deserializes the model object back from disk
+    import pandas as pd
+    from sklearn.linear_model import LogisticRegression
+    df = pd.read_csv("student-mat.csv", sep=";")
+    df["pass"] = (df["G3"] >= 10).astype(int)
+    for col in ["schoolsup","famsup","paid","activities","higher"]:
+        df[col] = (df[col] == "yes").astype(int)
+    X = df[["studytime","absences","failures","schoolsup","famsup","paid","activities","higher"]]
+    y = df["pass"]
+    model = LogisticRegression(max_iter=1000)
+    model.fit(X, y)
     return model
-
 model = load_model()   # Call the function; the returned model object is stored here
 
 # ─────────────────────────────────────────────
